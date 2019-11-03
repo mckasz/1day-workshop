@@ -1,0 +1,11 @@
+plugins {
+    id 'java'
+    id 'groovy'
+}
+
+dependencies {
+    compileOnly('org.projectlombok:lombok:1.18.10')
+    annotationProcessor('org.projectlombok:lombok:1.18.10')
+
+    testImplementation('org.spockframework:spock-core:1.3-groovy-2.5')
+}
