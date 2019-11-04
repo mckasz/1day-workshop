@@ -23,10 +23,16 @@ class Offer {
     }
 
     void accept() {
+        if (status == OfferStatus.ACCEPTED) {
+            throw new IllegalStateException("Offer already accepted");
+        }
         status = OfferStatus.ACCEPTED;
     }
 
     void reject() {
+        if (status == OfferStatus.REJECTED) {
+            throw new IllegalStateException("Offer already rejected");
+        }
         status = OfferStatus.REJECTED;
     }
 }

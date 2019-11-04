@@ -67,4 +67,44 @@ class FirstSpecification extends Specification {
         transactionAudit.getStatus() == OfferStatus.REJECTED
         transactionAudit.getAmount() == 20
     }
+
+    def "User accepts accepted offer - exception is thrown"() {
+        given:
+        TestEventSender eventSender = new TestEventSender()
+        Loans app = new Loans(eventSender, new InMemoryTransactionRepository())
+        UserId loaner = new UserId(123)
+        UserId accepter = new UserId(234)
+        int amount = 20
+        LoanOfferCommand command = new LoanOfferCommand(loaner, accepter, amount)
+
+        when:
+        app.loanOffer(command)
+        def lastEvent = eventSender.getLastEvent()
+        def event = (LoanOfferEvent) lastEvent
+        app.acceptOffer(event.getOfferId())
+        app.acceptOffer(event.getOfferId())
+
+        then:
+        thrown(IllegalStateException)
+    }
+
+    def "User rejects rejected offer - exception is thrown"() {
+        given:
+        TestEventSender eventSender = new TestEventSender()
+        Loans app = new Loans(eventSender, new InMemoryTransactionRepository())
+        UserId loaner = new UserId(123)
+        UserId accepter = new UserId(234)
+        int amount = 20
+        LoanOfferCommand command = new LoanOfferCommand(loaner, accepter, amount)
+
+        when:
+        app.loanOffer(command)
+        def lastEvent = eventSender.getLastEvent()
+        def event = (LoanOfferEvent) lastEvent
+        app.rejectOffer(event.getOfferId())
+        app.rejectOffer(event.getOfferId())
+
+        then:
+        thrown(IllegalStateException)
+    }
 }
